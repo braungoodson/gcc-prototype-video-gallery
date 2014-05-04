@@ -1,0 +1,75 @@
+<!doctype html>
+<html xmlns:ng="http://angularjs.org" xmlns:gcc="http://www.gct.com">
+	<body data-ng-app="gcc">
+		<ul data-gcc-video-gallery>
+			<li data-gcc-video-player></li>
+			<li data-gcc-video url="/media/sunday-sky-1.mp4"></li>
+			<li data-gcc-video url="/media/sunday-sky-2.mp4"></li>
+			<li data-gcc-video url="/media/sunday-sky-3.mp4"></li>
+			<li data-gcc-video url="/media/sunday-sky-4.mp4"></li>
+		</ul>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+		<script>
+			var gcc = gcc || {};
+			gcc.services = gcc.services || {};
+			gcc.services.GccDataService = GccDataService;
+			function GccDataService () {
+				var videos = [];
+				return {
+					videos: videos
+				};
+			}
+		</script>
+		<script>
+			var gcc = gcc || {};
+			gcc.directives = gcc.directives || {};
+			gcc.directives.GccVideoGalleryDirective = GccVideoGalleryDirective;
+			gcc.directives.GccVideoPlayerDirective = GccVideoPlayerDirective;
+			gcc.directives.GccVideoDirective = GccVideoDirective;
+			function GccVideoDirective (gccDataService) {
+				return function (scope,element,attributes) {
+					gccDataService.videos.push({
+						url: attributes.url
+					});
+				}
+			}
+			function GccVideoPlayerDirective () {
+				return function (scope,element,attributes) {
+					element.css({
+						border: '1px solid green'
+					});
+				}
+			}
+			function GccVideoGalleryDirective () {
+				return function (scope,element,attributes) {
+					element.css({
+						border: '1px solid red'
+					});
+				}
+			}
+		</script>
+		<script>
+			angular.module('gcc',['gcc.services','gcc.directives']);
+
+			angular.module('gcc.services',[]);
+			angular.module('gcc.directives',['gcc.services']);
+
+			angular.module('gcc.services').service('gccDataService',[
+				gcc.services.GccDataService
+			]);
+
+			angular.module('gcc.directives').directive('gccVideoGallery',[
+				gcc.directives.GccVideoGalleryDirective
+			]);
+
+			angular.module('gcc.directives').directive('gccVideoPlayer',[
+				gcc.directives.GccVideoPlayerDirective
+			]);
+
+			angular.module('gcc.directives').directive('gccVideo',[
+				'gccDataService',
+				gcc.directives.GccVideoDirective
+			]);
+		</script>
+	</body>
+<html>
